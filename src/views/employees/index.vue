@@ -138,10 +138,39 @@ export default {
         page: 1,
         size: this.total
       })
-      console.log(rows)
+      // console.log(rows)
+      const exportExcelMappath = {
+        '手机号': 'mobile',
+        '姓名': 'username',
+        '入职日期': 'timeOfEntry',
+        '聘用形式': 'formOfEmployment',
+        '转正日期': 'correctionTime',
+        '工号': 'workNumber',
+        '部门': 'departmentName'
+      }
+      const header = Object.keys(exportExcelMappath)
+      const data = rows.map(item => {
+        // console.log(item)
+        return header.map(h => {
+        // 循环表头是手机号
+        // item mobile
+          if (h === '聘用形式') {
+            const find = this.hireType.find(hire => {
+              return hire.id === item[exportExcelMappath[h]]
+            })
+            // console.log(find)
+            return find ? find.value : '未知'
+          }
+          return item[exportExcelMappath[h]]
+        })
+      })
       export_json_to_excel({
-        header: ['姓名', '手机号'], // 导出数据的表头
-        data: [['张三', '13500000099'], ['李四', '13500011099']], // 导出的具体数据
+        // header: ['姓名', '手机号'], // 导出数据的表头
+        // data: [['张三', '13500000099'], ['李四', '13500011099']], // 导出的具体数据
+        header,
+        multiHeader: [['手机号', '主要信息', '', '', '', '', '部门']],
+        merges: ['A1:A2', 'B1:F1', 'G1:G2'],
+        data,
         filename: '人资员工列表', // 导出文件名
         autoWidth: true, // 单元格是否要自适应宽度
         bookType: 'xlsx' // 导出文件类型

@@ -38,19 +38,25 @@
 //表内容的数据
 //[[],[]]
 // 二维数组内部的数据结构：每一行的数据，顺序和表头保持一致
-const header = [ 
-    '手机号',
-   '姓名',
-    '入职日期',
-   '聘用形式',
-    '转正日期',
-   '工号',
-'部门',]
 
 //表内容的数据和员工列表是相同的，所以根据员工列表生成
+const exportExcelMappath = {
+    "手机号": 'mobile',
+    "姓名": 'username',
+    "入职日期": 'timeOfEntry',
+    "聘用形式": 'formOfEmployment',
+    "转正日期": 'correctionTime',
+    "工号": 'workNumber',
+    "部门": 'departmentName',
+}
+// const header = [ '手机号','姓名','入职日期','聘用形式','转正日期','工号','部门',]
+const header = Object.keys(exportExcelMappath)
 const data = arr.map(item =>{
+    console.log(item);
     return header.map(h => {
-        return h
+        //循环表头是手机号
+        //item mobile
+        return item[exportExcelMappath[h]]
     })
 })
 console.log(data);
