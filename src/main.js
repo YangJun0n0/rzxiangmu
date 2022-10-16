@@ -29,6 +29,9 @@ Object.keys(directive).forEach(key => { // Object.keys: 获取所有keys,即自�
 // Vue.use(ElementUI, { locale })
 // 如果想要中文版 element-ui，按如下方式声明
 Vue.use(ElementUI)
+// 打印
+import Print from 'vue-print-nb'
+Vue.use(Print)
 
 Vue.config.productionTip = false
 

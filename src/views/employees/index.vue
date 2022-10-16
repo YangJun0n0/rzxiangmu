@@ -16,6 +16,11 @@
     <el-card>
       <el-table v-loading="loading" border :data="list">
         <el-table-column label="序号" sortable="" width="80" type="index" />
+        <el-table-column label="头像" prop="staffPhoto">
+          <template slot-scope="{ row }">
+            <img :src="row.staffPhoto" alt="" style="width:100px;height:100px" @click="genQrCode(row.staffPhoto)">
+          </template>
+        </el-table-column>
         <el-table-column label="姓名" prop="username" />
         <el-table-column label="工号" prop="workNumber" />
         <el-table-column label="聘用形式" prop="formOfEmployment" :formatter="formatterFn" />
@@ -67,6 +72,15 @@
     </el-card>
 
     <add-employee ref="refEmployee" :dialog-visible.sync="dialogVisible" />
+    <!-- 头像预览弹框 -->
+    <el-dialog
+      title="预览头像"
+      :visible.sync="dialogVisibleQrCode"
+      width="30%"
+    >
+      <canvas ref="canvas" />
+
+    </el-dialog>
   </div>
 </template>
 
@@ -74,6 +88,7 @@
 import { getEmployeeList, delEmployee } from '@/api/employees'
 import HireType from '@/api/constant/employees' // 0和1表示正式
 import AddEmployee from './components/add-employee.vue'
+import QRCode from 'qrcode'
 export default {
   name: 'Employees',
   components: { AddEmployee },
@@ -87,7 +102,8 @@ export default {
       total: 0, // 总页数
       loading: false,
       hireType: HireType.hireType,
-      dialogVisible: false
+      dialogVisible: false,
+      dialogVisibleQrCode: false
     }
   },
   mounted() {
@@ -178,6 +194,17 @@ export default {
     },
     goDetail(row) {
       this.$router.push('/employees/detail/' + row.id)
+    },
+    genQrCode(staffPhoto) {
+      console.log(staffPhoto)
+      if (!staffPhoto) return this.$message.error('暂无头像')
+      this.dialogVisibleQrCode = true
+      this.$nextTick(() => {
+        QRCode.toCanvas(this.$refs.canvas, staffPhoto, function(error) {
+          if (error) console.log(error)
+          console.log('success')
+        })
+      })
     }
   }
 }
